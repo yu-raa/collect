@@ -1,0 +1,48 @@
+﻿@model Collect.Data.Item
+@using Collect.Data
+@inject ApplicationDbContext _context
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Create";
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 id="crE">Create</h1>
+
+<h4 id="iT">Item</h4>
+<hr />
+<div class="row" onload="getColl">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" id="nameL" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            @if (_context.Items.Count() > 0)
+           {         
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" onmouseup="sendLink(@_context.Items.OrderBy(it => it.Id).Last().Id)"/>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" onmouseup="sendLink(0)" />
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+<div>
+    <button onclick="window.history.go(-2)">Back to List</button>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

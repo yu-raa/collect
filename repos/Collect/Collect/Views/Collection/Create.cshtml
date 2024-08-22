@@ -1,0 +1,63 @@
+﻿@model Collect.Data.Collection
+@using Collect.Data
+@inject ApplicationDbContext _context
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 id="createCollectionHead">Create Collection</h1>
+
+<hr />
+
+@{
+    var userId = User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).ToList().AsQueryable().Select(cl => cl.Value);
+    if (userId.Count() > 0)
+    {
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Author" class="visually-hidden" value="@User.Identity" />
+            <div class="form-group">
+                <label asp-for="Name" id="nameLabel" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Topic" id="topicLabel" class="control-label"></label>
+                <div class="input-group mb-3">
+                    <select asp-for="Topic" class="custom-select" id="inputGroupSelect01">
+                        @foreach (var topic in _context.Topics)
+                        {
+                            <option value=@topic>@topic.TopicName</option>
+                        }
+                    </select>
+                </div>
+                <span asp-validation-for="Topic" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="DescriptionText" id="textLabel" class="control-label"></label>
+                <input asp-for="DescriptionText" class="form-control" />
+                <span asp-validation-for="DescriptionText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="OK" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+            <a id="backToList" href="@($"/Account")">Back to List</a>
+        </div>
+    }
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

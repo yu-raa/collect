@@ -1,0 +1,77 @@
+﻿@model Collect.Data.Collection
+@using Collect.Data
+@inject ApplicationDbContext _context
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Create";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 id="createCollectionHead">Create Collection</h1>
+
+<hr />
+
+@{
+    var ItemId = 0;
+    if (_context.Items.Count() > 0)
+    {
+        ItemId = _context.Items.Count();
+    }
+    var userId = User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).ToList().AsQueryable().Select(cl => cl.Value);
+    if (userId.Count() > 0)
+    {
+
+        <div class="row" onload="getColl(@ItemId)">
+            <div class="col-md-4">
+                <form asp-action="Create" id="collMain">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Author" class="visually-hidden" value="@User.Identity" />
+                    <div class="form-group">
+                        <label asp-for="Name" id="nameLabel" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Topic" id="topicLabel" class="control-label"></label>
+                        <div class="input-group mb-3">
+                            <select asp-for="Topic" class="custom-select" id="inputGroupSelect01">
+                                @foreach (var topic in _context.Topics)
+                                {
+                                    <option value=@topic>@topic.TopicName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="DescriptionText" id="textLabel" class="control-label"></label>
+                        <input asp-for="DescriptionText" class="form-control" />
+                        <span asp-validation-for="DescriptionText" class="text-danger"></span>
+                    </div>
+                        <div class="form-group">
+                            <label asp-for="Items" id="itemsLabel"></label>
+                            <button id="itemsButton" class="btn btn-light" onclick="window.location.href='/Identity/Items';return false;"></button>
+                        </div>
+                   
+
+                    <div class="form-group">
+                        <input type="submit" value="OK" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a id="backToList" href="@($"/Identity/Collection")">Back to List</a>
+        </div>
+    }
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
